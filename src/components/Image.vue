@@ -93,7 +93,6 @@
                 <button @click="Send()">Next</button>
             </a>
         </div>
-
     </section>
 </template>
 
