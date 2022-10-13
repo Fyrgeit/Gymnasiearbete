@@ -154,7 +154,8 @@ function draw() {
     if (canvas.getContext) {
         const ctx = canvas.getContext("2d");
 
-        //ctx.fillStyle = "rgb(255, 0, 0)";
+        ctx.lineWidth = 5;
+        
         ctx.beginPath();
         ctx.arc(75, 75, 50, 0, Math.PI * 2, true);
         ctx.moveTo(65, 70);
