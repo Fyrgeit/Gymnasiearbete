@@ -145,30 +145,6 @@ export default {
             draw();
         })
     },
-}
-
-function draw() {
-
-    const canvas = document.getElementById("canvas");
-
-    if (canvas.getContext) {
-        const ctx = canvas.getContext("2d");
-
-        ctx.lineWidth = 5;
-        
-        ctx.beginPath();
-        ctx.arc(75, 75, 50, 0, Math.PI * 2, true);
-        ctx.moveTo(65, 70);
-        ctx.arc(55, 70, 10, 0, Math.PI * 2, true);
-        ctx.moveTo(105, 70);
-        ctx.arc(95, 70, 10, 0, Math.PI * 2, true);
-        ctx.stroke();
-        
-        
-        ctx.beginPath();
-        ctx.arc(75, 55, 50, 1, Math.PI - 1, false);
-        ctx.stroke();
-    }
 };
 
 </script>

@@ -5,10 +5,12 @@
 <script>
 import Main from './components/Main.vue';
 import Image from './components/Image.vue';
+import Playground from './components/Playground.vue';
 
 const routes = {
   '/': Main,
-  '/image': Image
+  '/image': Image,
+  '/playground': Playground,
 }
 
 export default {
