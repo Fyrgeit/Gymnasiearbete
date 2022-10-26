@@ -56,6 +56,10 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
 }
 
+input[type="range"].debug {
+  margin-top: 0.5rem;
+}
+
 span {
   display: inline-block;
   width: 0.8rem;
@@ -91,6 +95,15 @@ section {
   display: flex;
   flex-direction: column;
   border-radius: 1rem;
+}
+
+p.alert {
+  background-color: rgb(240, 94, 36);
+  color: white;
+  text-align: center;
+  margin: 1rem 0;
+  border-radius: 1rem;
+  padding: 0.2rem;
 }
 
 a {

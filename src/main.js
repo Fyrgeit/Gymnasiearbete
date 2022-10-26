@@ -4,7 +4,7 @@ import './assets/main.css';
 
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { doc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, collection, setDoc, getDocs, updateDoc, arrayUnion } from "firebase/firestore";
 
 createApp(App).mount("#app");
 
@@ -22,7 +22,9 @@ const db = getFirestore(firebaseApp);
 
 export default {
     doc,
+    collection,
     setDoc,
+    getDocs,
     updateDoc,
     arrayUnion,
     db,

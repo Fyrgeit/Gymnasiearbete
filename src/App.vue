@@ -6,11 +6,12 @@
 import Main from './components/Main.vue';
 import Image from './components/Image.vue';
 import Playground from './components/Playground.vue';
+import Export from './components/Export.vue';
 
 const routes = {
   '/': Main,
   '/image': Image,
-  '/playground': Playground,
+  '/export': Export,
 }
 
 export default {

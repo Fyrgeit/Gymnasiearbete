@@ -1,7 +1,7 @@
 <template>
     <section>
         <canvas id="canvas" width="150" height="150"></canvas>
-        
+
         <h2>What personality traits do you think this face exhibits?</h2>
 
         <div class="sliderContainer">
@@ -16,7 +16,7 @@
                 <span /><span />
                 <span /><span />
             </div>
-            <input type="range" min="-4" max="4" v-model="values[0]">
+            <input type="range" min="-4" max="4" v-model="sliderInputs[0]">
         </div>
 
         <div class="sliderContainer">
@@ -31,7 +31,7 @@
                 <span /><span />
                 <span /><span />
             </div>
-            <input type="range" min="-4" max="4" v-model="values[1]">
+            <input type="range" min="-4" max="4" v-model="sliderInputs[1]">
         </div>
 
         <div class="sliderContainer">
@@ -46,7 +46,7 @@
                 <span /><span />
                 <span /><span />
             </div>
-            <input type="range" min="-4" max="4" v-model="values[2]">
+            <input type="range" min="-4" max="4" v-model="sliderInputs[2]">
         </div>
 
         <div class="sliderContainer">
@@ -61,7 +61,7 @@
                 <span /><span />
                 <span /><span />
             </div>
-            <input type="range" min="-4" max="4" v-model="values[3]">
+            <input type="range" min="-4" max="4" v-model="sliderInputs[3]">
         </div>
 
         <div class="sliderContainer">
@@ -76,18 +76,18 @@
                 <span /><span />
                 <span /><span />
             </div>
-            <input type="range" min="-4" max="4" v-model="values[4]">
+            <input type="range" min="-4" max="4" v-model="sliderInputs[4]">
         </div>
 
-        <p class="debug">{{values[0]}}</p>
-        <p class="debug">{{values[1]}}</p>
-        <p class="debug">{{values[2]}}</p>
-        <p class="debug">{{values[3]}}</p>
-        <p class="debug">{{values[4]}}</p>
+        <p class="debug">Eye size: {{ eyeSize }}</p>
+        <p class="debug">Pupil size: {{ pupilSize }}</p>
+        <p class="debug">Eye type: {{ eyeType }}</p>
+
+        <p v-if="alert" class="alert">You haven't changed any of the values. Are you sure you want to continue?</p>
 
         <div class="buttonContainer">
             <a href="#/">
-                <button>Back</button>
+                <button>Quit</button>
             </a>
             <a>
                 <button @click="Send()">Next</button>
@@ -105,13 +105,20 @@ export default {
 
     data() {
         return {
-            values: [
+            eyeSize: Math.floor(Math.random() * 10 + 1) / 10,
+            pupilSize: Math.floor(Math.random() * 10 + 1) / 10,
+            eyeType: Math.floor(Math.random() * 4),
+
+            alert: false,
+
+            sliderInputs: [
                 0,
                 0,
                 0,
                 0,
                 0,
             ],
+
             cats: [
                 ['Dumb', 'Intelligent'],
                 ['Lazy', 'Ambitious'],
@@ -124,27 +131,187 @@ export default {
 
     methods: {
         async Send() {
-            await shared.updateDoc(shared.doc(shared.db, 'users', localStorage.getItem('userId')), {
-                faces: shared.arrayUnion(
-                    {
-                        faceId: "816",
-                        values: this.values,
-                    },
-                )
-            });
+            let n = 0;
 
-            for (let i = 0; i < this.values.length; i++) {
-                this.values[i] = 0;
+            for (const i of this.sliderInputs) {
+                if (i == 0) {
+                    n++;
+                }
+            }
+
+            if (n == 5 && this.alert == false) {
+                this.alert = true;
+            }
+            else {
+                this.alert = false;
+
+                const timestamp = new Date().getTime();
+                const date = new Date(timestamp);
+
+                let get = JSON.parse(localStorage.getItem("count"));
+                if (get == null) {
+                    get = 0;
+                }
+                let set = JSON.stringify(get + 1);
+                localStorage.setItem("count", set);
+
+                await shared.updateDoc(shared.doc(shared.db, 'users', localStorage.getItem('userId')), {
+                    faces: shared.arrayUnion(
+                        {                            
+                            timestamp: date,
+                            
+                            count: get,
+                            
+                            face: {
+                                eyeSize: this.eyeSize,
+                                pupilSize: this.pupilSize,
+                                eyeType: this.eyeType,
+                            },
+
+                            values: this.sliderInputs,
+                        },
+                    )
+                });
+
+                for (let i = 0; i < this.sliderInputs.length; i++) {
+                    this.sliderInputs[i] = 0;
+                }
+
+                draw(this.eyeSize, this.pupilSize, this.eyeType);
+
+                this.eyeSize = Math.ceil(Math.sqrt(Math.random())*10)/10;
+                this.pupilSize = Math.ceil(Math.sqrt(Math.random())*10)/10;
+                this.eyeType = Math.floor(Math.random() * 4);
+                
+                window.scrollTo(0,0);
             }
         },
     },
 
-    mounted: function () {
-        this.$nextTick(function () {
-            console.log("h");
-            draw();
-        })
-    },
+    mounted() {
+        console.log(this.eyeSize);
+        draw(this.eyeSize, this.pupilSize, this.eyeType);
+    }
+};
+
+function draw(eyeSize, pupilSize, eyeType) {
+
+    const canvas = document.getElementById("canvas");
+
+    if (canvas.getContext) {
+        const ctx = canvas.getContext("2d");
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.lineWidth = 2;
+
+        ctx.beginPath();
+        ctx.arc(75, 75, 50, 0, Math.PI * 2, true);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(75, 55, 50, 1, Math.PI - 1, false);
+        ctx.stroke();
+
+        eye(+eyeType, ctx, 55, 65, eyeSize, pupilSize);
+    }
+};
+
+function eye(type, ctx, x, y, r, p) {
+    switch (type) {
+        case 0:
+            r *= 18;
+            p *= 1;
+
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(150 - x, y, r, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(x, y, r * p, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(150 - x, y, r * p, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+        case 1:
+            r *= 18;
+            p *= 1;
+
+            ctx.beginPath();
+            ctx.arc(x, y - r / 2, r, Math.PI, 0, false);
+            ctx.lineTo(x + r, y + r / 2);
+            ctx.arc(x, y + r / 2, r, 0, Math.PI, false);
+            ctx.lineTo(x - r, y - r / 2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(150 - x, y - r / 2, r, Math.PI, 0, false);
+            ctx.lineTo(150 - x + r, y + r / 2);
+            ctx.arc(150 - x, y + r / 2, r, 0, Math.PI, false);
+            ctx.lineTo(150 - x - r, y - r / 2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(x, y, r * p, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(150 - x, y, r * p, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+        case 2:
+            r *= 10;
+            p *= 1.5;
+
+            ctx.beginPath();
+            ctx.arc(x, y + r * 0.58, r * 2, Math.PI * 2 - 0.3, Math.PI + 0.3, true);
+            ctx.arc(x, y - r * 0.58, r * 2, Math.PI - 0.3, 0.3, true);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(150 - x, y + r * 0.58, r * 2, Math.PI * 2 - 0.3, Math.PI + 0.3, true);
+            ctx.arc(150 - x, y - r * 0.58, r * 2, Math.PI - 0.3, 0.3, true);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(x, y, r * p, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(150 - x, y, r * p, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+        case 3:
+            r *= 11;
+            p *= 1.1;
+
+            ctx.beginPath();
+            ctx.arc(x, y + r * 0.95, r * 2, Math.PI * 2 - 0.5, Math.PI + 0.5, true);
+            ctx.arc(x, y - r * 0.95, r * 2, Math.PI - 0.5, 0.5, true);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(150 - x, y + r * 0.95, r * 2, Math.PI * 2 - 0.5, Math.PI + 0.5, true);
+            ctx.arc(150 - x, y - r * 0.95, r * 2, Math.PI - 0.5, 0.5, true);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(x, y, r * p, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(150 - x, y, r * p, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+        default:
+            break;
+    };
 };
 
 </script>
