@@ -19,7 +19,6 @@ export default {
         async Export() {
             const querySnapshot = await shared.getDocs(shared.collection(shared.db, "users"));
             querySnapshot.forEach((doc) => {
-                // doc.data() is never undefined for query doc snapshots
                 console.log(doc.data());
             });
         },
