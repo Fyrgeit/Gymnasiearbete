@@ -4,13 +4,16 @@
 
 <script>
 import Main from './components/Main.vue';
+import Intro from './components/Intro.vue';
 import Image from './components/Image.vue';
-import Playground from './components/Playground.vue';
+import Exit from './components/Exit.vue';
 import Export from './components/Export.vue';
 
 const routes = {
   '/': Main,
+  '/intro': Intro,
   '/image': Image,
+  '/exit': Exit,
   '/export': Export,
 }
 

@@ -2,14 +2,15 @@
     <section>
         <canvas id="canvas" width="150" height="150"></canvas>
 
-        <h2>What personality traits do you think this face exhibits?</h2>
+        <h2>Vilka personlighetsdrag tycker du detta ansiktet har?</h2>
 
         <div class="sliderContainer">
-            <div class="sliderStuff">
-                <h3>{{cats[0][0]}}</h3>
-                <h3>{{cats[0][1]}}</h3>
+            <div class="sliderLabels">
+                <h3>{{ cats[0][0] }}</h3>
+                <h3>{{ cats[0][1] }}</h3>
+                <h3>{{ cats[0][2] }}</h3>
             </div>
-            <div class="sliderBlobs sliderStuff">
+            <div class="sliderBlobs">
                 <span /><span />
                 <span /><span />
                 <span />
@@ -20,11 +21,12 @@
         </div>
 
         <div class="sliderContainer">
-            <div class="sliderStuff">
-                <h3>{{cats[1][0]}}</h3>
-                <h3>{{cats[1][1]}}</h3>
+            <div class="sliderLabels">
+                <h3>{{ cats[1][0] }}</h3>
+                <h3>{{ cats[1][1] }}</h3>
+                <h3>{{ cats[1][2] }}</h3>
             </div>
-            <div class="sliderBlobs sliderStuff">
+            <div class="sliderBlobs">
                 <span /><span />
                 <span /><span />
                 <span />
@@ -35,11 +37,12 @@
         </div>
 
         <div class="sliderContainer">
-            <div class="sliderStuff">
-                <h3>{{cats[2][0]}}</h3>
-                <h3>{{cats[2][1]}}</h3>
+            <div class="sliderLabels">
+                <h3>{{ cats[2][0] }}</h3>
+                <h3>{{ cats[2][1] }}</h3>
+                <h3>{{ cats[2][2] }}</h3>
             </div>
-            <div class="sliderBlobs sliderStuff">
+            <div class="sliderBlobs">
                 <span /><span />
                 <span /><span />
                 <span />
@@ -50,11 +53,12 @@
         </div>
 
         <div class="sliderContainer">
-            <div class="sliderStuff">
-                <h3>{{cats[3][0]}}</h3>
-                <h3>{{cats[3][1]}}</h3>
+            <div class="sliderLabels">
+                <h3>{{ cats[3][0] }}</h3>
+                <h3>{{ cats[3][1] }}</h3>
+                <h3>{{ cats[3][2] }}</h3>
             </div>
-            <div class="sliderBlobs sliderStuff">
+            <div class="sliderBlobs">
                 <span /><span />
                 <span /><span />
                 <span />
@@ -65,11 +69,12 @@
         </div>
 
         <div class="sliderContainer">
-            <div class="sliderStuff">
-                <h3>{{cats[4][0]}}</h3>
-                <h3>{{cats[4][1]}}</h3>
+            <div class="sliderLabels">
+                <h3>{{ cats[4][0] }}</h3>
+                <h3>{{ cats[4][1] }}</h3>
+                <h3>{{ cats[4][2] }}</h3>
             </div>
-            <div class="sliderBlobs sliderStuff">
+            <div class="sliderBlobs">
                 <span /><span />
                 <span /><span />
                 <span />
@@ -83,16 +88,18 @@
         <p class="debug">Pupil size: {{ pupilSize }}</p>
         <p class="debug">Eye type: {{ eyeType }}</p>
 
-        <p v-if="alert" class="alert">You haven't changed any of the values. Are you sure you want to continue?</p>
-
-        <div class="buttonContainer">
-            <a href="#/">
-                <button>Quit</button>
+        <p v-if="alert" class="alert">Du har inte ändrat några värden. Är du säker på att du vill fortsätta?</p>
+        
+        <div v-if="!loading" class="buttonContainer">
+            <a href="#/exit">
+                <button>Avsluta</button>
             </a>
             <a>
-                <button @click="Send()">Next</button>
+                <button @click="Send()">Nästa</button>
             </a>
         </div>
+
+        <img v-if="loading" class="loading" src="/src/assets/loading.webp" alt="Loading icon">
     </section>
 </template>
 
@@ -110,6 +117,7 @@ export default {
             eyeType: Math.floor(Math.random() * 4),
 
             alert: false,
+            loading: false,
 
             sliderInputs: [
                 0,
@@ -120,11 +128,11 @@ export default {
             ],
 
             cats: [
-                ['Dumb', 'Intelligent'],
-                ['Lazy', 'Ambitious'],
-                ['Rude', 'Nice'],
-                ['Impulsive', 'Thoughtful'],
-                ['Lame', 'Cool'],
+                ['Dum', 'Neutral', 'Intelligent'],
+                ['Lat', 'Neutral', 'Ambitiös'],
+                ['Taskig', 'Neutral', 'Snäll'],
+                ['Impulsiv', 'Neutral', 'Eftertänksam'],
+                ['Mesig', 'Neutral', 'Cool'],
             ],
         }
     },
@@ -133,8 +141,10 @@ export default {
         async Send() {
             let n = 0;
 
-            for (const i of this.sliderInputs) {
-                if (i == 0) {
+            for (let i = 0; i < this.sliderInputs.length; i++) {
+                this.sliderInputs[i] = parseInt(this.sliderInputs[i], 10);
+
+                if (this.sliderInputs[i] == 0) {
                     n++;
                 }
             }
@@ -145,6 +155,8 @@ export default {
             else {
                 this.alert = false;
 
+                this.loading = true;
+
                 const timestamp = new Date().getTime();
                 const date = new Date(timestamp);
 
@@ -153,15 +165,16 @@ export default {
                     get = 0;
                 }
                 let set = JSON.stringify(get + 1);
+
                 localStorage.setItem("count", set);
 
                 await shared.updateDoc(shared.doc(shared.db, 'users', localStorage.getItem('userId')), {
                     faces: shared.arrayUnion(
-                        {                            
+                        {
                             timestamp: date,
-                            
+
                             count: get,
-                            
+
                             face: {
                                 eyeSize: this.eyeSize,
                                 pupilSize: this.pupilSize,
@@ -177,13 +190,14 @@ export default {
                     this.sliderInputs[i] = 0;
                 }
 
+                this.eyeSize = Math.ceil(Math.sqrt(Math.random()) * 10) / 10;
+                this.pupilSize = Math.ceil(Math.sqrt(Math.random()) * 10) / 10;
+                this.eyeType = Math.floor(Math.random() * 4);
                 draw(this.eyeSize, this.pupilSize, this.eyeType);
 
-                this.eyeSize = Math.ceil(Math.sqrt(Math.random())*10)/10;
-                this.pupilSize = Math.ceil(Math.sqrt(Math.random())*10)/10;
-                this.eyeType = Math.floor(Math.random() * 4);
-                
-                window.scrollTo(0,0);
+                this.loading = false;
+
+                window.scrollTo(0, 0);
             }
         },
     },

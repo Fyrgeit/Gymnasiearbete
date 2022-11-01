@@ -1,9 +1,20 @@
 <template>
+    <div class="info" :class="{ infoExpand: info }" @click="toggle()">
+        <img :class="{ imgHide: info }" src="/src/assets/about.png" alt="">
+        <div class="infoContent" :class="{ infoContentExpand: info }">
+            <h2>Vad är detta för projekt?</h2>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis provident voluptatem eum consectetur,
+                impedit placeat hic neque, natus adipisci eius fugit veritatis distinctio! Libero, praesentium aut hic
+                consectetur maxime nobis quasi laboriosam eius illum accusamus repudiandae harum perspiciatis mollitia
+                culpa placeat quidem voluptatibus ipsam. Assumenda, est. Cumque quam possimus minima!</p>
+        </div>
+    </div>
+
     <section>
-        <h1>Welcome!</h1>
+        <h1>Välkommen!</h1>
 
         <form action="">
-            <h2>Please enter your gender</h2>
+            <h2>Vad är ditt kön?</h2>
             <input type="radio" id="g0" value="male" v-model="gender" />
             <label for="g0">{{ genders[0] }}</label><br />
             <input type="radio" id="g1" value="female" v-model="gender" />
@@ -13,7 +24,7 @@
         </form>
 
         <form action="">
-            <h2>Please enter your age</h2>
+            <h2>Hur gammal är du?</h2>
             <input type="radio" id="a0" value="14-" v-model="age" />
             <label for="a0">{{ ages[0] }}</label><br />
             <input type="radio" id="a1" value="15-17" v-model="age" />
@@ -33,8 +44,9 @@
         <p class="debug">{{ gender }}, {{ age }}</p>
         <p class="debug">userId: {{ userId }}</p>
         <button @click="clear()" class="debug">clear localStorage</button>
-        <a href="#/image">
-            <button @click="send()">Next</button>
+
+        <a href="#/intro">
+            <button @click="send()">Nästa</button>
         </a>
     </section>
 </template>
@@ -48,16 +60,18 @@ export default {
 
     data() {
         return {
-            genders: ["Male", "Female", "Other/Prefer not to answer"],
+            info: false,
+
+            genders: ["Man", "Kvinna", "Annat/Svara ej"],
 
             ages: [
-                "Less than 14",
+                "Yngre än 14",
                 "15-17",
                 "18-20",
                 "21-25",
                 "26-35",
-                "More than 36",
-                "Prefer not to answer",
+                "Äldre än 36",
+                "Svara ej",
             ],
 
             gender: "other",
@@ -75,7 +89,8 @@ export default {
             await shared.setDoc(shared.doc(shared.db, 'users', localStorage.getItem('userId')), {
                 gender: this.gender,
                 age: this.age,
-            });
+            },
+                { merge: true });
 
             this.gender = "other";
             this.age = "other";
@@ -85,7 +100,11 @@ export default {
         clear() {
             localStorage.clear();
             this.userId = localStorage.getItem('userId');
-        }
+        },
+
+        toggle() {
+            this.info = !this.info;
+        },
     },
 };
 
