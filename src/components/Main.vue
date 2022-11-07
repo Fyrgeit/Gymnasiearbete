@@ -1,15 +1,4 @@
 <template>
-    <div class="info" :class="{ infoExpand: info }" @click="toggle()">
-        <img :class="{ imgHide: info }" src="/src/assets/about.png" alt="">
-        <div class="infoContent" :class="{ infoContentExpand: info }">
-            <h2>Vad är detta för projekt?</h2>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis provident voluptatem eum consectetur,
-                impedit placeat hic neque, natus adipisci eius fugit veritatis distinctio! Libero, praesentium aut hic
-                consectetur maxime nobis quasi laboriosam eius illum accusamus repudiandae harum perspiciatis mollitia
-                culpa placeat quidem voluptatibus ipsam. Assumenda, est. Cumque quam possimus minima!</p>
-        </div>
-    </div>
-
     <section>
         <h1>Välkommen!</h1>
 
@@ -41,9 +30,9 @@
             <label for="a6">{{ ages[6] }}</label><br />
         </form>
 
-        <p class="debug">{{ gender }}, {{ age }}</p>
+        <!-- <p class="debug">{{ gender }}, {{ age }}</p>
         <p class="debug">userId: {{ userId }}</p>
-        <button @click="clear()" class="debug">clear localStorage</button>
+        <button @click="clear()" class="debug">clear localStorage</button> -->
 
         <a href="#/intro">
             <button @click="send()">Nästa</button>
@@ -60,8 +49,6 @@ export default {
 
     data() {
         return {
-            info: false,
-
             genders: ["Man", "Kvinna", "Annat/Svara ej"],
 
             ages: [
@@ -100,10 +87,6 @@ export default {
         clear() {
             localStorage.clear();
             this.userId = localStorage.getItem('userId');
-        },
-
-        toggle() {
-            this.info = !this.info;
         },
     },
 };

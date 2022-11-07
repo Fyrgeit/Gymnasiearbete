@@ -8,9 +8,14 @@
   font-size: 1.1rem;
 }
 
+:root {
+  --dark: #273e5c;
+  --light: #4078a3;
+}
+
 body {
-  background-color: darkblue;
-  padding: 1rem;
+  background-color: var(--dark);
+  padding: min(3vw, 1rem);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,7 +28,7 @@ p {
 
 .info {
   position: fixed;
-  top: 0;
+  bottom: 0;
   right: 0;
   margin: 1rem;
   background-color: white;
@@ -66,13 +71,18 @@ img.loading {
 }
 
 h1 {
-  font-size: 3rem;
+  font-size: min(3rem, 12vw);
   text-align: center;
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: min(1.5rem, 8vw);
   text-align: left;
+}
+
+h2.x {
+  text-align: right;
+  margin-bottom: -1.5rem;
 }
 
 h3:nth-of-type(1) {
@@ -111,7 +121,7 @@ input[type="range"] {
 
 input[type="range"]::-webkit-slider-thumb {
   appearance: none;
-  background: navy;
+  background: var(--light);
   height: 1.5rem;
   width: 1.5rem;
   border-radius: 50%;
@@ -163,7 +173,7 @@ div.sliderContainer {
 
 section {
   background-color: white;
-  padding: 1rem;
+  padding: min(3vw, 1rem);
   display: flex;
   flex-direction: column;
   border-radius: 1rem;
@@ -179,10 +189,15 @@ p.alert {
 }
 
 a {
+  color: var(--light);
+}
+
+a:hover {
   text-decoration: none;
 }
 
 a:has(button) {
+  text-decoration: none;
   align-self: center;
   display: flex;
   flex-grow: 1;
@@ -191,23 +206,24 @@ a:has(button) {
 
 button {
   align-self: center;
-  font-size: 2rem;
+  padding: 0 1rem;
+  font-size: min(2rem, 8vw);
   flex-grow: 1;
   border-radius: 1rem;
-  border: navy 0.2rem solid;
-  color: navy;
+  border: var(--light) 0.2rem solid;
+  color: var(--light);
   background-color: white;
-  transition: 0.2s ease;
+  transition: color 0.2s, background-color 0.2s;
 }
 
 button:hover {
   color: white;
-  background-color: navy;
+  background-color: var(--light);
 }
 
 .buttonContainer {
   display: flex;
-  gap: 1rem;
+  gap: min(1rem, 3vw);
 }
 
 canvas {

@@ -84,9 +84,9 @@
             <input type="range" min="-4" max="4" v-model="sliderInputs[4]">
         </div>
 
-        <p class="debug">Eye size: {{ eyeSize }}</p>
+        <!-- <p class="debug">Eye size: {{ eyeSize }}</p>
         <p class="debug">Pupil size: {{ pupilSize }}</p>
-        <p class="debug">Eye type: {{ eyeType }}</p>
+        <p class="debug">Eye type: {{ eyeType }}</p> -->
 
         <p v-if="alert" class="alert">Du har inte ändrat några värden. Är du säker på att du vill fortsätta?</p>
         
